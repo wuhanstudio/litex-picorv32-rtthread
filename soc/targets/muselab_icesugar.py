@@ -71,8 +71,8 @@ class BaseSoC(SoCCore):
         kwargs["integrated_rom_size"]  = 0
 
         # Set CPU variant
-        kwargs["cpu_type"]    = "vexriscv"
-        kwargs["cpu_variant"] = "lite"
+        kwargs["cpu_type"]    = "picorv32"
+        kwargs["cpu_variant"] = "standard"
 
         SoCCore.__init__(self, platform, sys_clk_freq, ident="LiteX SoC on Muselab iCESugar", **kwargs)
 

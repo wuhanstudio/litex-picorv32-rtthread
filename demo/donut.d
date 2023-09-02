@@ -2,7 +2,7 @@ donut.o: donut.c /usr/riscv64-linux-gnu/include/stdc-predef.h \
  /home/wuhanstudio/python-litex/pythondata-software-picolibc/pythondata_software_picolibc/data/newlib/libc/tinystdio/stdio.h \
  /home/wuhanstudio/python-litex/pythondata-software-picolibc/pythondata_software_picolibc/data/newlib/libc/include/inttypes.h \
  /home/wuhanstudio/python-litex/pythondata-software-picolibc/pythondata_software_picolibc/data/newlib/libc/include/newlib.h \
- /home/wuhanstudio/muselab_ice_sugar/build/muselab_icesugar/software/include/../libc/picolibc.h \
+ /home/wuhanstudio/litex-soc-icesugar-rust/build/muselab_icesugar/software/include/../libc/picolibc.h \
  /home/wuhanstudio/python-litex/pythondata-software-picolibc/pythondata_software_picolibc/data/newlib/libc/include/sys/config.h \
  /home/wuhanstudio/python-litex/pythondata-software-picolibc/pythondata_software_picolibc/data/newlib/libc/include/machine/ieeefp.h \
  /home/wuhanstudio/python-litex/pythondata-software-picolibc/pythondata_software_picolibc/data/newlib/libc/include/sys/features.h \
@@ -38,7 +38,7 @@ donut.o: donut.c /usr/riscv64-linux-gnu/include/stdc-predef.h \
 
 /home/wuhanstudio/python-litex/pythondata-software-picolibc/pythondata_software_picolibc/data/newlib/libc/include/newlib.h:
 
-/home/wuhanstudio/muselab_ice_sugar/build/muselab_icesugar/software/include/../libc/picolibc.h:
+/home/wuhanstudio/litex-soc-icesugar-rust/build/muselab_icesugar/software/include/../libc/picolibc.h:
 
 /home/wuhanstudio/python-litex/pythondata-software-picolibc/pythondata_software_picolibc/data/newlib/libc/include/sys/config.h:
 
