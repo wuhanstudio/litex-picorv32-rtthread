@@ -3,7 +3,7 @@
 <device schemaVersion="1.1" xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" xs:noNamespaceSchemaLocation="CMSIS-SVD.xsd" >
     <vendor>litex</vendor>
     <name>SOC</name>
-    <description><![CDATA[Litex SoC 2023-01-11 19:52:43]]></description>
+    <description><![CDATA[Litex SoC 2023-09-03 18:13:47]]></description>
 
     <addressUnitBits>8</addressUnitBits>
     <width>32</width>
@@ -15,7 +15,7 @@
     <peripherals>
         <peripheral>
             <name>CTRL</name>
-            <baseAddress>0xF0000000</baseAddress>
+            <baseAddress>0x82000000</baseAddress>
             <groupName>CTRL</groupName>
             <registers>
                 <register>
@@ -81,7 +81,7 @@ to the Wishbone/CSR bus are working correctly. The initial reset value of
         </peripheral>
         <peripheral>
             <name>IDENTIFIER_MEM</name>
-            <baseAddress>0xF0000800</baseAddress>
+            <baseAddress>0x82000800</baseAddress>
             <groupName>IDENTIFIER_MEM</groupName>
             <registers>
                 <register>
@@ -108,7 +108,7 @@ to the Wishbone/CSR bus are working correctly. The initial reset value of
         </peripheral>
         <peripheral>
             <name>LEDS</name>
-            <baseAddress>0xF0001000</baseAddress>
+            <baseAddress>0x82001000</baseAddress>
             <groupName>LEDS</groupName>
             <registers>
                 <register>
@@ -135,7 +135,7 @@ to the Wishbone/CSR bus are working correctly. The initial reset value of
         </peripheral>
         <peripheral>
             <name>SPIFLASH_CORE</name>
-            <baseAddress>0xF0001800</baseAddress>
+            <baseAddress>0x82001800</baseAddress>
             <groupName>SPIFLASH_CORE</groupName>
             <registers>
                 <register>
@@ -161,7 +161,7 @@ to the Wishbone/CSR bus are working correctly. The initial reset value of
         </peripheral>
         <peripheral>
             <name>SPIFLASH_PHY</name>
-            <baseAddress>0xF0002000</baseAddress>
+            <baseAddress>0x82002000</baseAddress>
             <groupName>SPIFLASH_PHY</groupName>
             <registers>
                 <register>
@@ -187,7 +187,7 @@ to the Wishbone/CSR bus are working correctly. The initial reset value of
         </peripheral>
         <peripheral>
             <name>TIMER0</name>
-            <baseAddress>0xF0002800</baseAddress>
+            <baseAddress>0x82002800</baseAddress>
             <groupName>TIMER0</groupName>
             <registers>
                 <register>
@@ -374,12 +374,12 @@ register to disable individual events.]]></description>
             </addressBlock>
             <interrupt>
                 <name>timer0</name>
-                <value>1</value>
+                <value>4</value>
             </interrupt>
         </peripheral>
         <peripheral>
             <name>UART</name>
-            <baseAddress>0xF0003000</baseAddress>
+            <baseAddress>0x82003000</baseAddress>
             <groupName>UART</groupName>
             <registers>
                 <register>
@@ -536,7 +536,7 @@ register to disable individual events.]]></description>
             </addressBlock>
             <interrupt>
                 <name>uart</name>
-                <value>0</value>
+                <value>3</value>
             </interrupt>
         </peripheral>
     </peripherals>
@@ -545,11 +545,6 @@ register to disable individual events.]]></description>
             <memoryRegion>
                 <name>SRAM</name>
                 <baseAddress>0x00000000</baseAddress>
-                <size>0x00010000</size>
-            </memoryRegion>
-            <memoryRegion>
-                <name>MAIN_RAM</name>
-                <baseAddress>0x00010000</baseAddress>
                 <size>0x00010000</size>
             </memoryRegion>
             <memoryRegion>
@@ -564,7 +559,7 @@ register to disable individual events.]]></description>
             </memoryRegion>
             <memoryRegion>
                 <name>CSR</name>
-                <baseAddress>0xF0000000</baseAddress>
+                <baseAddress>0x82000000</baseAddress>
                 <size>0x00010000</size>
             </memoryRegion>
         </memoryRegions>
@@ -572,10 +567,9 @@ register to disable individual events.]]></description>
             <constant name="CONFIG_CLOCK_FREQUENCY" value="24000000" />
             <constant name="CONFIG_CPU_HAS_INTERRUPT" value="None" />
             <constant name="CONFIG_CPU_RESET_ADDR" value="0" />
-            <constant name="CONFIG_CPU_HAS_ICACHE" value="None" />
-            <constant name="CONFIG_CPU_TYPE_VEXRISCV" value="None" />
-            <constant name="CONFIG_CPU_VARIANT_LITE" value="None" />
-            <constant name="CONFIG_CPU_HUMAN_NAME" value="VexRiscv_Lite" />
+            <constant name="CONFIG_CPU_TYPE_BUS_ERROR" value="None" />
+            <constant name="CONFIG_CPU_VARIANT_STANDARD" value="None" />
+            <constant name="CONFIG_CPU_HUMAN_NAME" value="PicoRV32" />
             <constant name="CONFIG_CPU_NOP" value="nop" />
             <constant name="SPIFLASH_PHY_FREQUENCY" value="24000000" />
             <constant name="SPIFLASH_MODULE_NAME" value="W25Q64FV" />
@@ -587,8 +581,8 @@ register to disable individual events.]]></description>
             <constant name="CONFIG_BUS_DATA_WIDTH" value="32" />
             <constant name="CONFIG_BUS_ADDRESS_WIDTH" value="32" />
             <constant name="CONFIG_BUS_BURSTING" value="0" />
-            <constant name="TIMER0_INTERRUPT" value="1" />
-            <constant name="UART_INTERRUPT" value="0" />
+            <constant name="TIMER0_INTERRUPT" value="4" />
+            <constant name="UART_INTERRUPT" value="3" />
         </constants>
     </vendorExtensions>
 </device>
