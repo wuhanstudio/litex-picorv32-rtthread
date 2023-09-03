@@ -73,8 +73,11 @@ $ litex_bare_metal_demo --build-path=./build/muselab_icesugar/
 
 ```
 $ cd app
-$ cargo objcopy --target riscv32i-unknown-none-elf --release -- -O binary app.bin
+$ cargo objcopy --target riscv32im-unknown-none-elf --release -- -O binary app.bin
 $ icesprog -o 0x40000 app.bin
+
+# Check all supported riscv32 variants
+# rustc --print target-list | grep riscv32
 ```
 
 This Rust library `icesugar-pac` was generated using [svd2rust](https://github.com/rust-embedded/svd2rust):
