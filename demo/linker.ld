@@ -10,10 +10,10 @@ SECTIONS
 	.text :
 	{
 		_ftext = .;
-		/* Make sure crt0 files come first, and they, and the isr */
+		/* Make sure start files come first, and they, and the isr */
 		/* don't get disposed of by greedy optimisation */
-		*crt0*(.text)
-		KEEP(*crt0*(.text))
+		*start*(.text)
+		KEEP(*start*(.text))
 		KEEP(*(.text.isr))
 
 		*(.text .stub .text.* .gnu.linkonce.t.*)

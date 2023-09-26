@@ -3,11 +3,10 @@ BUILD_DIR?=../build/muselab_icesugar/
 include $(BUILD_DIR)/software/include/generated/variables.mak
 include $(SOC_DIRECTORY)/software/common.mak
 
-OBJECTS   = donut.o helloc.o crt0.o main.o
-ifdef WITH_CXX
-	OBJECTS += hellocpp.o
-	CFLAGS += -DWITH_CXX
-endif
+CFLAGS += 	-I ./picorv32\
+			-I ./
+
+OBJECTS   = picorv32/custom_ops.o start.o main.o
 
 
 all: demo.bin
