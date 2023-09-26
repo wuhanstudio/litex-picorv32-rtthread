@@ -1,32 +1,15 @@
 /*
- * Copyright (c) 2020-2020, YuZhaorong 
- *
- * SPDX-License-Identifier: Apache-2.0
- *
- * Change Logs:
- * Date           Author       Notes
- * 2020-06-06     YuZhaorong      
- * 2023-09-09     Han Wu      
- */
-
-#include <custom_ops.S>
-
-.section .text
-.section .text.entry
-
-/* From litex/litex/soc/cores/cpu/picorv32/crt0.S */
-/*
  * Copyright 2018, Serge Bazanski <serge@bazanski.pl>
  *
  * Permission to use, copy, modify, and/or distribute this software for any
  * purpose with or without fee is hereby granted.
  */
 
+#include "custom_ops.S"
+
 /*
  * Interrupt vector.
  */
-.global irq_entry
-
 .global _start
 _start:
 
@@ -117,7 +100,7 @@ _irq:
   addi sp, sp, %lo(_irq_stack)
 
   /* call C handler */
-  jal ra, isr
+  jal ra, myirq
 
   /* use x1 to index into irq_regs */
   lui x1, %hi(irq_regs)
@@ -241,13 +224,12 @@ _crt0:
   picorv32_setq_insn(q2, t0)
 
   /* jump to main */
-  /* zero-initialize all registers */
-  # call entry  
   jal ra, main
 
 1:
   /* loop forever */
   j 1b
+
 
 /*
  * Enable interrupts by copying the software mask to the hardware mask
