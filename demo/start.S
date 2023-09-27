@@ -18,30 +18,8 @@ _start:
 
 .org 0x00000010 # IRQ
 _irq_vector:
-  addi sp, sp, -16
-  sw t0, 4(sp)
-  sw ra, 8(sp)
-  /* By convention, q2 holds true IRQ vector, but remains caller-save.
-  We rely on the assumption that compiler-generated code will never touch
-  the QREGs. q3 is truly scratch/caller-save. */
-  picorv32_getq_insn(t0, q2)
-  sw t0, 12(sp)
 
-  jalr t0 // Call the true IRQ vector.
-
-  lw t0, 12(sp)
-  picorv32_setq_insn(q2, t0) // Restore the true IRQ vector.
-  lw ra, 8(sp)
-  lw t0, 4(sp)
-  addi sp, sp, 16
-  picorv32_retirq_insn() // return from interrupt
-
-
-/*
- * IRQ handler, branched to from the vector.
- */
-_irq:
-  /* save x1/x2 to q1/q2 */
+ /* save x1/x2 to q1/q2 */
   picorv32_setq_insn(q2, x1)
   picorv32_setq_insn(q3, x2)
 
@@ -148,7 +126,8 @@ _irq:
   /* restore x1 - x2 from q registers */
   picorv32_getq_insn(x1, q1)
   picorv32_getq_insn(x2, q2)
-  ret
+
+  picorv32_retirq_insn() // return from interrupt
 
 /*
  * Reset handler, branched to from the vector.
@@ -217,12 +196,6 @@ _crt0:
   /* set main stack */
   la sp, _fstack
 
-  /* Set up address to IRQ handler since vector is hardcoded.
-  By convention, q2 keeps the pointer to the true IRQ handler,
-  to emulate relocatable interrupts. */
-  la t0, _irq
-  picorv32_setq_insn(q2, t0)
-
   /* jump to main */
   jal ra, main
 
@@ -262,7 +235,7 @@ _irq_disable:
 
 /*
  * Set interrrupt mask.
- * This updates the software mask (for readback and interrupt inable/disable)
+ * This updates the software mask (for readback and interrupt enable/disable)
  * and the hardware mask.
  * 1 means interrupt is masked (disabled).
  */
@@ -280,14 +253,15 @@ _irq_setmask:
 1:
   ret
 
-
 .section .bss
-irq_regs:
-  /* saved interrupt registers, x0 - x31 */
-  .fill 32,4
 
-  /* interrupt stack */
-  .fill 256,4
+irq_regs:
+	// registers are saved to this memory region during interrupt handling
+	// the program counter is saved as register 0
+	.fill 32,4
+
+	// stack for the interrupt handler
+	.fill 256,4
 _irq_stack:
 
 /*
