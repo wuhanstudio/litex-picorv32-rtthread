@@ -10,7 +10,7 @@ SECTIONS
 	.text :
 	{
 		_ftext = .;
-		/* Make sure crt0 files come first, and they, and the isr */
+		/* Make sure crt0 files come first, and then the isr */
 		/* don't get disposed of by greedy optimisation */
 		*start*(.text)
 		KEEP(*start*(.text))
