@@ -3,7 +3,7 @@
 #include <libbase/uart.h>
 
 // Interrupt handler
-void myirq(void);
+void irq(void);
 
 int volatile timeup = 0;
 int volatile count = 0;
@@ -34,12 +34,16 @@ int main(void)
     return 0;
 }
 
-void myirq(void)
+void irq(void)
 {
 	__attribute__((unused)) unsigned int irqs;
 	irqs = irq_pending() & irq_getmask();
 
-	if(irqs & (1 << TIMER0_INTERRUPT))
+    // Dont't use irqs to decide which interrupt is pending
+    // Because irq() will be called twice and irqs is not up-to-date
+	// if(irqs & (1 << TIMER0_INTERRUPT))
+
+    if(timer0_ev_pending_zero_read())
     {
         timer0_ev_pending_zero_write(1);
 
@@ -49,7 +53,7 @@ void myirq(void)
 
 #ifdef CSR_UART_BASE
 #ifndef UART_POLLING
-	if(irqs & (1 << UART_INTERRUPT))
+	if(uart_ev_pending_rx_read() || uart_ev_pending_tx_read())
     	printf("UART Interrupt \n");
 		uart_isr();
 #endif

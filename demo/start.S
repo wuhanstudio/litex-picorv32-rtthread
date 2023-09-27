@@ -78,7 +78,7 @@ _irq_vector:
   addi sp, sp, %lo(_irq_stack)
 
   /* call C handler */
-  jal ra, myirq
+  jal ra, irq
 
   /* use x1 to index into irq_regs */
   lui x1, %hi(irq_regs)
