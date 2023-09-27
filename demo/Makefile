@@ -6,7 +6,7 @@ include $(SOC_DIRECTORY)/software/common.mak
 CFLAGS += 	-I ./picorv32\
 			-I ./
 
-OBJECTS   = picorv32/custom_ops.o start.o main.o
+OBJECTS   = picorv32/custom_ops.o start.o irq_handler.o main.o
 
 
 all: demo.bin

@@ -7,9 +7,9 @@
 
 #include "custom_ops.S"
 
-/*
- * Interrupt vector.
- */
+.section .text
+.section .text.entry
+
 .global _start
 _start:
 

@@ -14,7 +14,7 @@ SECTIONS
 		/* don't get disposed of by greedy optimisation */
 		*start*(.text)
 		KEEP(*start*(.text))
-		KEEP(*(.text.myirq))
+		KEEP(*(.text.irq))
 
 		*(.text .stub .text.* .gnu.linkonce.t.*)
 		_etext = .;
