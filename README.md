@@ -7,8 +7,8 @@
 Clone the repo:
 
 ```
-$ git clone https://github.com/wuhanstudio/litex-soc-icesugar-rust
-$ cd litex-soc-icesugar-rust
+$ git clone https://github.com/wuhanstudio/litex-picorv32-rtthread
+$ cd litex-picorv32-rtthread
 $ git submodule init
 $ git submodule update
 ```
@@ -20,23 +20,24 @@ $ mkdir python-litex && cd python-litex
 $ wget https://raw.githubusercontent.com/enjoy-digital/litex/master/litex_setup.py
 $ chmod +x litex_setup.py
 $ ./litex_setup.py --init --install --user `whoami` --config=full
+$ pip3 install meson
 ```
 
 For C development:
 
 ```
-$ ./litex_setup.py --gcc=riscv
-```
-
-For Rust development:
-
-```
-$ rustup target add riscv32imac-unknown-none-elf
-$ cargo install cargo-binutils
-$ rustup component add llvm-tools-preview
+$ sudo ./litex_setup.py --gcc=riscv
 ```
 
 You can upload bitstream and firmware to Icesugar board using the tool `icesprog` in side the folder `icesugar/tools/`.
+
+```
+$ sudo apt install libusb-dev libhidapi-dev 
+$ cd litex-picorv32-rtthread
+$ cd icesugar/tools
+$ make
+$ sudo cp icesprog /usr/bin/
+```
 
 ## LiteX SoC
 
