@@ -1,4 +1,4 @@
-# Rust on Litex SoC (RISC-V)
+# RT-Thread on Litex SoC (RISC-V)
 
 > Using Rust on a customized LiteX SoC (RISC-V).
 
