@@ -3,16 +3,27 @@ BUILD_DIR?=../build/muselab_icesugar/
 include $(BUILD_DIR)/software/include/generated/variables.mak
 include $(SOC_DIRECTORY)/software/common.mak
 
+COMMONFLAGS = $(DEPFLAGS) -Os $(CPUFLAGS) -g3 -no-pie -fomit-frame-pointer -Wall -fno-builtin -fno-stack-protector $(INCLUDES)
+COMMONFLAGS += -fexceptions
+
+CFLAGS  = $(COMMONFLAGS)
+
 CFLAGS += 	-I ../build/muselab_icesugar/software/include/\
           	-I ./rt-thread/libcpu/risc-v/picorv32\
         	-I ./rt-thread/include/\
-            -I ./rt-thread/components/finsh/\
         	-I ./rt-thread/include/libc/\
-			-I ./
+            -I ./rt-thread/components/finsh/\
+			-I ./libraries/picorv32/\
+			-I ./\
+			-Wno-missing-prototypes\
+
+LDFLAGS =  -ffunction-sections -nostartfiles\
+		   -nostdlib -Wl,--build-id=none $(CFLAGS)\
+		   -L ../build/muselab_icesugar/software/include -L$(BUILDINC_DIRECTORY)
 
 OBJECTS   = drivers/board.o\
-			libraries/start.o\
 			applications/main.o\
+			libraries/start.o\
 			./rt-thread/libcpu/risc-v/picorv32/interrupt_gcc.o\
 			./rt-thread/libcpu/risc-v/picorv32/interrupt.o\
 			./rt-thread/libcpu/risc-v/picorv32/context_gcc.o\
@@ -68,7 +79,6 @@ VPATH = $(BIOS_DIRECTORY):$(BIOS_DIRECTORY)/cmds:$(CPU_DIRECTORY)
 	$(compilexx)
 
 %.o: %.c
-	echo $(CFLAGS)
 	$(compile)
 
 %.o: %.S

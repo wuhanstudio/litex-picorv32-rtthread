@@ -1,81 +1,77 @@
-/*
-This is free and unencumbered software released into the public domain.
+INCLUDE generated/output_format.ld
+ENTRY(_pvstart)
 
-Anyone is free to copy, modify, publish, use, compile, sell, or
-distribute this software, either in source code form or as a compiled
-binary, for any purpose, commercial or non-commercial, and by any
-means.
-*/
+__DYNAMIC = 0;
 
-/* starting address needs to be > 0 due to known bug in RISCV/GNU linker */
-MEMORY {
-	sram : ORIGIN = 0x00000000, LENGTH = 0x00010000
-	rom : ORIGIN = 0x00840000, LENGTH = 0x00008000
-	csr : ORIGIN = 0x82000000, LENGTH = 0x00010000
-}
+INCLUDE generated/regions.ld
 
-ENTRY(_pvstart);
-
-SECTIONS 
+SECTIONS
 {
-  .init :
-  {
-    . = ALIGN(4);
-    *(.text.entry);
-  } > rom
+	.text :
+	{
+		_ftext = .;
+		/* Make sure crt0 files come first, and then the isr */
+		/* don't get disposed of by greedy optimisation */
+		*start*(.text)
+		KEEP(*start*(.text))
+		KEEP(*(.text.irq))
 
-  .interrupt ORIGIN(rom) + 0x400: 
-  {
-    . = ALIGN(4);
-    KEEP(*(.text.interrupt));
-  } > rom
+		*(.text .stub .text.* .gnu.linkonce.t.*)
+		_etext = .;
+	} > rom
 
-  .data :
-  {
-    _data_lma = LOADADDR(.data);
-    _data = .;
-    __global_pointer$ = . ;
-    *(.data .data.* )
-    *(.sdata .sdata.*)
-    *(COMMON)
-      . = ALIGN(4);
-    _edata = .;
-  } >sram AT > rom
-  
-  .bss :
-  {
-    _bss_start = .;
-    *(.bss .bss.*)
-    *(.sbss .sbss.*)
-      . = ALIGN(4);
-    _bss_end = .;
-    _end = .;
-  } > sram
-  
-  .rom :
-  {
-    . = ALIGN(4);
-    *(.text);
+	.rodata :
+	{
+		. = ALIGN(8);
+		_frodata = .;
+		*(.rodata .rodata.* .gnu.linkonce.r.*)
+		*(.rodata1)
+		*(.got .got.*)
+		*(.toc .toc.*)
+		. = ALIGN(8);
+		_erodata = .;
+	} > rom
 
-    /* section information for finsh shell */
-    . = ALIGN(4);
-    __fsymtab_start = .;
-    KEEP(*(FSymTab))
-    __fsymtab_end = .;
-    . = ALIGN(4);
-    __vsymtab_start = .;
-    KEEP(*(VSymTab))
-    __vsymtab_end = .;
-    . = ALIGN(4);	
-    *(.stub .text.* .gnu.linkonce.t.*);
-    *(.rodata  .rodata.*);
-    *(.*);
-  } > rom
+	.data :
+	{
+		. = ALIGN(8);
+		_fdata = .;
+		*(.data .data.* .gnu.linkonce.d.*)
+		*(.data1)
+		_gp = ALIGN(16);
+		*(.sdata .sdata.* .gnu.linkonce.s.*)
+		. = ALIGN(8);
+		_edata = .;
 
-  .stack ORIGIN(sram) + LENGTH(sram) :
-  {
-    _riscv_sp = . ; 
-  } > sram 
+		/* section information for finsh shell */
+		. = ALIGN(4);
+		__fsymtab_start = .;
+		KEEP(*(FSymTab))
+		__fsymtab_end = .;
+		. = ALIGN(4);
+		__vsymtab_start = .;
+		KEEP(*(VSymTab))
+		__vsymtab_end = .;
+
+	} > sram AT > rom
+
+	.bss :
+	{
+		. = ALIGN(8);
+		_fbss = .;
+		*(.dynsbss)
+		*(.sbss .sbss.* .gnu.linkonce.sb.*)
+		*(.scommon)
+		*(.dynbss)
+		*(.bss .bss.* .gnu.linkonce.b.*)
+		*(COMMON)
+		. = ALIGN(8);
+		_ebss = .;
+		_end = .;
+	} > sram
 }
 
+PROVIDE(_fstack = ORIGIN(sram) + LENGTH(sram));
 
+PROVIDE(_fdata_rom = LOADADDR(.data));
+PROVIDE(_edata_rom = LOADADDR(.data) + SIZEOF(.data));

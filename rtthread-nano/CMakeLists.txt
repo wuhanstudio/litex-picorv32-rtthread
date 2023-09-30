@@ -21,7 +21,7 @@ set(CMAKE_FIND_ROOT_PATH_MODE_PACKAGE ONLY)
 set(CMAKE_C_FLAGS "-MD -Os -Wall" )
 
 set(CMAKE_ASM_FLAGS "-nostdlib" )
-set(LD_FLAGS "-ffunction-sections  -nostartfiles -Wl,--gc-sections")
+set(LD_FLAGS "-L../../build/muselab_icesugar/software/include -ffunction-sections -nostartfiles -Wl,--gc-sections")
 
 set(CMAKE_TRY_COMPILE_TARGET_TYPE STATIC_LIBRARY)
 set(ENABLE_EXPORTS  True)
@@ -35,9 +35,9 @@ set(LSS_TARGET ${PROJECT_NAME}.asm)
 set(TMP_TARGET ${PROJECT_NAME}.tmp)
 
 set(RISCV_SRC 
-   libraries/start.S
-   drivers/board.c
    applications/main.c
+   drivers/board.c
+   libraries/start.S
    ./rt-thread/libcpu/risc-v/picorv32/interrupt_gcc.S
    ./rt-thread/libcpu/risc-v/picorv32/interrupt.c
    ./rt-thread/libcpu/risc-v/picorv32/context_gcc.S
@@ -74,7 +74,7 @@ include_directories(../build/muselab_icesugar/software/include/
                     ./rt-thread/include/
                     ./rt-thread/components/finsh/
                     ./rt-thread/include/libc/
-                    ./picorv32/
+                    ./libraries/picorv32/
                     ./)
 
 add_executable(${PROJECT_NAME}.elf ${RISCV_SRC})
