@@ -3,10 +3,9 @@ BUILD_DIR?=../build/muselab_icesugar/
 include $(BUILD_DIR)/software/include/generated/variables.mak
 include $(SOC_DIRECTORY)/software/common.mak
 
-COMMONFLAGS = $(DEPFLAGS) -Os $(CPUFLAGS) -g3 -no-pie -fomit-frame-pointer -Wall -fno-builtin -fno-stack-protector $(INCLUDES)
-COMMONFLAGS += -fexceptions
-
-CFLAGS  = $(COMMONFLAGS)
+# COMMONFLAGS = $(DEPFLAGS) -Os $(CPUFLAGS) -g3 -no-pie -fomit-frame-pointer -Wall -fno-builtin -fno-stack-protector $(INCLUDES)
+# COMMONFLAGS += -fexceptions
+# CFLAGS  = $(COMMONFLAGS)
 
 CFLAGS += 	-I ../build/muselab_icesugar/software/include/\
           	-I ./rt-thread/libcpu/risc-v/picorv32\
