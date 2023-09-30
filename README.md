@@ -94,6 +94,14 @@ $ make
 $ icesprog -w demo.bin -o 0x40000
 ```
 
+## RT-Thread Nano
+
+```
+$ cd rtthread-nano
+$ make
+$ icesprog -w rt-thread.bin -o 0x40000
+```
+
 ## References
 
 - https://github.com/icebreaker-fpga/icebreaker-litex-examples
