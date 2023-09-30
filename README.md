@@ -96,12 +96,6 @@ $ make
 $ icesprog -w demo.bin -o 0x40000
 ```
 
-This C example can be generated using:
-
-```
-$ litex_bare_metal_demo --build-path=./build/muselab_icesugar/
-```
-
 ## Rust Demo
 
 ```
