@@ -39,18 +39,50 @@ $ make
 $ sudo cp icesprog /usr/bin/
 ```
 
+Install IceStorm:
+
+```
+$ git clone https://github.com/YosysHQ/icestorm.git
+$ cd icestorm
+$ sudo apt-get install build-essential clang bison flex libreadline-dev \
+                     gawk tcl-dev libffi-dev git mercurial graphviz   \
+                     xdot pkg-config python python3 libftdi-dev \
+                     qt5-default python3-dev libboost-all-dev cmake libeigen3-dev
+$ make -j$(nproc)
+$ sudo make install
+```
+
+Install Yosys:
+
+```
+$ git clone https://github.com/YosysHQ/yosys.git
+$ cd yosys
+$ make -j$(nproc)
+$ sudo make install
+```
+
+Install Nextpnr:
+
+```
+$ git clone https://github.com/YosysHQ/nextpnr
+$ cd nextpnr
+$ cmake . -DARCH=ice40
+$ make -j$(nproc)
+$ sudo make install
+```
+
 ## LiteX SoC
 
 ```
 $ cd litex-soc-icesugar-rust
 
-# This command uses the upstream default config
-# python3 -m litex_boards.targets.muselab_icesugar --build --doc
-# python3 -m litex_boards.targets.muselab_icesugar --flash
-
 # This command uses our custom config
 $ python3 -m soc.targets.muselab_icesugar --build --doc
 $ python3 -m soc.targets.muselab_icesugar --flash
+
+# This command uses the upstream default config
+# python3 -m litex_boards.targets.muselab_icesugar --build --doc
+# python3 -m litex_boards.targets.muselab_icesugar --flash
 ```
 
 ## C Demo
