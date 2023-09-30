@@ -1,0 +1,3 @@
+doc/
+gateware/
+!.gitignore
