@@ -1,6 +1,6 @@
 # RT-Thread on Litex SoC (RISC-V)
 
-> Using Rust on a customized LiteX SoC (RISC-V).
+> Using RT-Thread Nano on a customized LiteX SoC (RISC-V).
 
 ## Prerequisites
 
