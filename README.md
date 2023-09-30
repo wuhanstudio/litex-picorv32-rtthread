@@ -34,9 +34,7 @@ You can upload bitstream and firmware to Icesugar board using the tool `icesprog
 ```
 $ sudo apt install libusb-dev libhidapi-dev 
 $ cd litex-picorv32-rtthread
-$ cd icesugar/tools
-$ make
-$ sudo cp icesprog /usr/bin/
+$ sudo cp icesugar/tools/icesprog* /usr/bin/
 ```
 
 Install IceStorm:
@@ -94,32 +92,6 @@ $ python3 -m soc.targets.muselab_icesugar --flash
 $ cd demo
 $ make
 $ icesprog -w demo.bin -o 0x40000
-```
-
-## Rust Demo
-
-```
-$ cd app
-$ cargo objcopy --target riscv32im-unknown-none-elf --release -- -O binary app.bin
-$ icesprog -o 0x40000 app.bin
-
-# Check all supported riscv32 variants
-# rustc --print target-list | grep riscv32
-```
-
-This Rust library `icesugar-pac` was generated using [svd2rust](https://github.com/rust-embedded/svd2rust):
-
-```
-$ cargo install svd2rust
-$ python -m soc.targets.muselab_icesugar --csr-json csr.json --timer-uptime --build --csr-svd icesugar.svd
-
-$ cargo new --lib icesugar-pac && cd icesugar-pac
-$ cp ../icesugar.svd ./
-
-$ svd2rust -i icesugar.svd --target riscv
-$ mv lib.rs src/
-
-# Then manually added dependencies to Cargo.toml
 ```
 
 ## References
