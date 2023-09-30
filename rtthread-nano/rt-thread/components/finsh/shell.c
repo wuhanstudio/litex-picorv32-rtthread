@@ -101,7 +101,7 @@ int finsh_set_prompt(const char * prompt)
 #include <dfs_posix.h>
 #endif /* RT_USING_DFS */
 
-const char *finsh_get_prompt()
+const char *finsh_get_prompt(void)
 {
 #define _MSH_PROMPT "msh "
 #define _PROMPT     "finsh "
@@ -272,7 +272,7 @@ void finsh_set_echo(rt_uint32_t echo)
  *
  * @return the echo mode
  */
-rt_uint32_t finsh_get_echo()
+rt_uint32_t finsh_get_echo(void)
 {
     RT_ASSERT(shell != RT_NULL);
 

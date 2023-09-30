@@ -10,7 +10,9 @@
  * 2020-11-25     Wu Han       change code style to en    
  */
 
+#include <irq.h>
 #include <rthw.h>
+
 #define IRQN_MAX        32
 #define MAX_HANDLERS    IRQN_MAX
 
@@ -40,7 +42,9 @@ void rt_hw_interrupt_init(void)
 #endif
     }
 
+    rt_kprintf("interrupt init 1\n");
      rt_hw_interrupt_enable(irq_mask); 
+    rt_kprintf("interrupt init 1 done\n");
        /* Enable machine external interrupts. */
 }
 
@@ -104,19 +108,48 @@ rt_isr_handler_t rt_hw_interrupt_install(int vector, rt_isr_handler_t handler,
     return old_handler;
 }
 
-unsigned int *irq(unsigned int *regs, unsigned int irqs)
+void irq(void)
 {
-    int int_num;
-    for(int_num = 0; int_num < MAX_HANDLERS; int_num++)
+
+    // __attribute__((unused)) unsigned int irqs;
+    // irqs = irq_pending() & irq_getmask();
+
+    // rt_kprintf("Enter Interrupt ... 0x%08x\n", irqs);
+
+    // Dont't use irqs to decide which interrupt is pending
+    // Because irq() will be called twice and irqs is not up-to-date
+    // if(irqs & (1 << TIMER0_INTERRUPT))
+
+    if(timer0_ev_pending_zero_read())
     {
-        if( (0x1 & (irqs>>int_num))== 1 )
-        {
-            if (irq_desc[int_num].handler)
-            {
-                irq_desc[int_num].handler(int_num, irq_desc[int_num].param);
-            }
-        }
-            
+        // rt_kprintf("Timer interrupt %d\n", rt_tick_get());
+        rt_tick_increase();
+        rt_kprintf("Timer interrupt %d\n", rt_tick_get());
+
+        timer0_ev_pending_zero_write(1);
+
+        timer0_ev_enable_write(1);
+	    irq_setmask(irq_getmask() | (1 << TIMER0_INTERRUPT));
+
+        timer0_en_write(0);
+        timer0_reload_write(0);
+        timer0_load_write(CONFIG_CLOCK_FREQUENCY / RT_TICK_PER_SECOND);
+        timer0_en_write(1);
+
     }
-	return regs;
+
+    // int int_num;
+    // for(int_num = 0; int_num < MAX_HANDLERS; int_num++)
+    // {
+    //     if( (0x1 & (irqs>>int_num))== 1 )
+    //     {
+    //         if (irq_desc[int_num].handler)
+    //         {
+    //             irq_desc[int_num].handler(int_num, irq_desc[int_num].param);
+    //         }
+    //     } 
+    // }
+
+    // rt_kprintf("Exit interrupt \n");
+    return;
 }

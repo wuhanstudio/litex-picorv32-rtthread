@@ -12,13 +12,15 @@
 
 #include <rthw.h>
 #include <rtthread.h>
+
 #include "cpuport.h"
+#include <irq.h>
 
 volatile rt_ubase_t  rt_interrupt_from_thread = 0;
 volatile rt_ubase_t  rt_interrupt_to_thread   = 0;
 volatile rt_uint32_t rt_thread_switch_interrupt_flag = 0;
 volatile rt_uint32_t rt_hw_context_switch_flag = 0;
-unsigned int riscv_maskirq(unsigned int maskirq);
+
 struct rt_hw_stack_frame
 {
     rt_ubase_t epc;        /* epc - epc    - program counter                     */
@@ -105,6 +107,7 @@ void rt_hw_context_switch_interrupt(rt_ubase_t from, rt_ubase_t to)
         rt_interrupt_from_thread = from;
 
     rt_interrupt_to_thread = to;
+
     rt_thread_switch_interrupt_flag = 1;
 
     return ;
@@ -112,41 +115,55 @@ void rt_hw_context_switch_interrupt(rt_ubase_t from, rt_ubase_t to)
 
 void rt_hw_context_switch(rt_ubase_t from, rt_ubase_t to)
 {
+    rt_kprintf("Context Switch...\n");
+
     if (rt_thread_switch_interrupt_flag == 0)
         rt_interrupt_from_thread = from;
 
     rt_interrupt_to_thread = to;
+
     rt_thread_switch_interrupt_flag = 1;
-    rt_hw_context_switch_flag=1 ;
+
+    rt_hw_context_switch_flag = 1 ;
+
     return ;
 }
 
 rt_base_t rt_hw_interrupt_disable(void)
 {
-    return riscv_maskirq(0xffffffff);
+    // rt_kprintf("Interrupt Disabled \n");
+    _irq_disable();
+
+    return _irq_enabled == 0;
 }
 
 void rt_hw_interrupt_enable(rt_base_t level)
 {
-    riscv_maskirq(level);
-    
+    // rt_kprintf("Interrupt Enabled 0x%08x\n", level);
+
+    irq_setmask(0);
+	irq_setie(1);
+
     if(rt_hw_context_switch_flag)
     {
-        rt_hw_context_switch_flag =0;
-        if((level & 0x0002)==0)
+        rt_hw_context_switch_flag = 0;
+        if((level & 0x0002) == 0)
         {
             /* trigger system interrupt or not */
            if(rt_thread_switch_interrupt_flag)   
            {
-                __asm("ecall");
+                rt_kprintf("Call Interrupt...\n");
+                __asm("call _irq");
+                // __asm("ecall");
            }
         }
     }
+
     return;
 }
 
 /** shutdown CPU */
-void rt_hw_cpu_shutdown()
+void rt_hw_cpu_shutdown(void)
 {
     rt_uint32_t level;
     rt_kprintf("shutdown...\n");

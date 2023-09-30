@@ -25,7 +25,8 @@ rt_hw_context_switch_to:
     lw tp,   0 * 4(sp)                /* Add PC to thread poiner */
     lw x1,   1 * REGBYTES(sp)         /* x1 - ra - return address for jumps */
 
-    /* lw x4,   4 * REGBYTES(sp) */
+    // x3(gp) global pointer
+    // x4(tp) thread pointer
     lw x5,   5 * REGBYTES(sp)
     lw x6,   6 * REGBYTES(sp)
     lw x7,   7 * REGBYTES(sp)

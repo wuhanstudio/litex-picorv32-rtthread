@@ -57,6 +57,8 @@ void rt_tick_set(rt_tick_t tick)
 
     level = rt_hw_interrupt_disable();
     rt_tick = tick;
+    
+    rt_kprintf("RT_tick_set\n");
     rt_hw_interrupt_enable(level);
 }
 
@@ -85,6 +87,7 @@ void rt_tick_increase(void)
     }
 
     /* check timer */
+    rt_kprintf("Timer check\n");
     rt_timer_check();
 }
 

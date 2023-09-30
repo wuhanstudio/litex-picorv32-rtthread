@@ -109,6 +109,7 @@ void rt_thread_exit(void)
     }
 
     /* enable interrupt */
+    rt_kprintf("thread exit\n");
     rt_hw_interrupt_enable(level);
 
     /* switch to next task */
@@ -338,6 +339,7 @@ rt_err_t rt_thread_detach(rt_thread_t thread)
         /* insert to defunct thread list */
         rt_list_insert_after(&rt_thread_defunct, &(thread->tlist));
         /* enable interrupt */
+        rt_kprintf("thread 1\n");
         rt_hw_interrupt_enable(lock);
     }
 
@@ -469,6 +471,7 @@ rt_err_t rt_thread_yield(void)
                               &(thread->tlist));
 
         /* enable interrupt */
+        rt_kprintf("thread 2\n");
         rt_hw_interrupt_enable(level);
 
         rt_schedule();
@@ -477,6 +480,7 @@ rt_err_t rt_thread_yield(void)
     }
 
     /* enable interrupt */
+        rt_kprintf("thread 3\n");
     rt_hw_interrupt_enable(level);
 
     return RT_EOK;
@@ -510,6 +514,7 @@ rt_err_t rt_thread_sleep(rt_tick_t tick)
     rt_timer_start(&(thread->thread_timer));
 
     /* enable interrupt */
+        rt_kprintf("thread 4\n");
     rt_hw_interrupt_enable(temp);
 
     rt_schedule();
@@ -613,6 +618,7 @@ rt_err_t rt_thread_control(rt_thread_t thread, int cmd, void *arg)
         }
 
         /* enable interrupt */
+        rt_kprintf("thread 5\n");
         rt_hw_interrupt_enable(temp);
         break;
 
@@ -671,6 +677,7 @@ rt_err_t rt_thread_suspend(rt_thread_t thread)
     rt_timer_stop(&(thread->thread_timer));
 
     /* enable interrupt */
+        rt_kprintf("thread 6\n");
     rt_hw_interrupt_enable(temp);
 
     RT_OBJECT_HOOK_CALL(rt_thread_suspend_hook, (thread));
@@ -712,6 +719,7 @@ rt_err_t rt_thread_resume(rt_thread_t thread)
     rt_timer_stop(&thread->thread_timer);
 
     /* enable interrupt */
+        rt_kprintf("thread 7\n");
     rt_hw_interrupt_enable(temp);
 
     /* insert to schedule ready list */

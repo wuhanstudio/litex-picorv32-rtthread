@@ -506,6 +506,7 @@ void rt_timer_check(void)
 
     while (!rt_list_isempty(&rt_timer_list[RT_TIMER_SKIP_LIST_LEVEL - 1]))
     {
+        rt_kprintf("Non-empty list\n");
         t = rt_list_entry(rt_timer_list[RT_TIMER_SKIP_LIST_LEVEL - 1].next,
                           struct rt_timer, row[RT_TIMER_SKIP_LIST_LEVEL - 1]);
 
@@ -515,19 +516,25 @@ void rt_timer_check(void)
          */
         if ((current_tick - t->timeout_tick) < RT_TICK_MAX / 2)
         {
+            rt_kprintf("Non-empty list if\n");
             RT_OBJECT_HOOK_CALL(rt_timer_enter_hook, (t));
 
             /* remove timer from timer list firstly */
             _rt_timer_remove(t);
 
+            rt_kprintf("Non-empty list if remove\n");
+
             /* call timeout function */
             t->timeout_func(t->parameter);
 
+            rt_kprintf("Non-empty list if remove call timeout\n");
             /* re-get tick */
             current_tick = rt_tick_get();
 
             RT_OBJECT_HOOK_CALL(rt_timer_exit_hook, (t));
             RT_DEBUG_LOG(RT_DEBUG_TIMER, ("current tick: %d\n", current_tick));
+
+            rt_kprintf("Non-empty list if start\n");
 
             if ((t->parent.flag & RT_TIMER_FLAG_PERIODIC) &&
                 (t->parent.flag & RT_TIMER_FLAG_ACTIVATED))
@@ -545,6 +552,7 @@ void rt_timer_check(void)
         else
             break;
     }
+    rt_kprintf("Timer check done\n");
 
     /* enable interrupt */
     rt_hw_interrupt_enable(level);
