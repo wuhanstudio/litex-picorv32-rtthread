@@ -87,7 +87,6 @@ void rt_tick_increase(void)
     }
 
     /* check timer */
-    rt_kprintf("Timer check\n");
     rt_timer_check();
 }
 
