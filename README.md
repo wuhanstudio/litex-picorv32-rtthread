@@ -4,7 +4,7 @@
 
 ## Prerequisites
 
-Clone the repo:
+0. Clone the repo:
 
 ```
 $ git clone https://github.com/wuhanstudio/litex-picorv32-rtthread
@@ -13,7 +13,7 @@ $ git submodule init
 $ git submodule update
 ```
 
-Install LiteX:
+1. Install LiteX:
 
 ```
 $ mkdir python-litex && cd python-litex
@@ -37,7 +37,7 @@ $ cd litex-picorv32-rtthread
 $ sudo cp icesugar/tools/icesprog* /usr/bin/
 ```
 
-Install IceStorm:
+2. Install IceStorm:
 
 ```
 $ git clone https://github.com/YosysHQ/icestorm.git
@@ -50,7 +50,7 @@ $ make -j$(nproc)
 $ sudo make install
 ```
 
-Install Yosys:
+3. Install Yosys:
 
 ```
 $ git clone https://github.com/YosysHQ/yosys.git
@@ -59,7 +59,7 @@ $ make -j$(nproc)
 $ sudo make install
 ```
 
-Install Nextpnr:
+4. Install Nextpnr:
 
 ```
 $ git clone https://github.com/YosysHQ/nextpnr
@@ -94,7 +94,7 @@ $ make
 $ icesprog -w demo.bin -o 0x40000
 ```
 
-## RT-Thread Nano
+## RT-Thread Nano (In Progress)
 
 ```
 $ cd rtthread-nano
