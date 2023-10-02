@@ -23,6 +23,7 @@ _irq_vector:
   addi sp, sp, -16
   sw t0, 4(sp)
   sw ra, 8(sp)
+
   /* By convention, q2 holds true IRQ vector, but remains caller-save.
   We rely on the assumption that compiler-generated code will never touch
   the QREGs. q3 is truly scratch/caller-save. */
@@ -33,9 +34,11 @@ _irq_vector:
 
   lw t0, 12(sp)
   picorv32_setq_insn(q2, t0) // Restore the true IRQ vector.
+
   lw ra, 8(sp)
   lw t0, 4(sp)
   addi sp, sp, 16
+
   picorv32_retirq_insn() // return from interrupt
 
 

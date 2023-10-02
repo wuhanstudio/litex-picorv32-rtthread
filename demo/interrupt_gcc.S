@@ -6,7 +6,7 @@
  .global _irq
 
 _irq:
-  /* save x1/x2 to q1/q2 */
+  /* save x1/x2 to q2/q3 */
   picorv32_setq_insn(q2, x1)
   picorv32_setq_insn(q3, x2)
 
@@ -15,8 +15,6 @@ _irq:
   addi x1, x1, %lo(irq_regs)
 
   /* use x2 as scratch space for saving registers */
-
-  /* q0 (== x1), q2(== x2), q3 */
   picorv32_getq_insn(x2, q0)
   sw x2,   0*4(x1)
   picorv32_getq_insn(x2, q2)
@@ -25,8 +23,8 @@ _irq:
   sw x2,   2*4(x1)
 
   /* save x3 - x31 */
-  sw x3,   3*4(x1)
-  sw x4,   4*4(x1)
+  // sw x3,   3*4(x1)
+  // sw x4,   4*4(x1)
   sw x5,   5*4(x1)
   sw x6,   6*4(x1)
   sw x7,   7*4(x1)
@@ -64,24 +62,33 @@ _irq:
   lui sp, %hi(_irq_stack)
   addi sp, sp, %lo(_irq_stack)
 
+	// arg0 = address of regs
+	lui a0, %hi(irq_regs)
+	addi a0, a0, %lo(irq_regs)
+
+	// arg1 = interrupt type
+	picorv32_getq_insn(a1, q1)
+
   /* call C handler */
   jal ra, irq
 
-  /* use x1 to index into irq_regs */
-  lui x1, %hi(irq_regs)
-  addi x1, x1, %lo(irq_regs)
+  // new irq_regs address returned from C code in a0
+	addi x1, a0, 0  /* use x1 to index into irq_regs */
+
+  // lui x1, %hi(irq_regs)
+  // addi x1, x1, %lo(irq_regs)
 
   /* restore q0 - q2 */
   lw x2,   0*4(x1)
   picorv32_setq_insn(q0, x2)
   lw x2,   1*4(x1)
-  picorv32_setq_insn(q1, x2)
-  lw x2,   2*4(x1)
   picorv32_setq_insn(q2, x2)
+  lw x2,   2*4(x1)
+  picorv32_setq_insn(q3, x2)
 
   /* restore x3 - x31 */
-  lw x3,   3*4(x1)
-  lw x4,   4*4(x1)
+  // lw x3,   3*4(x1)
+  // lw x4,   4*4(x1)
   lw x5,   5*4(x1)
   lw x6,   6*4(x1)
   lw x7,   7*4(x1)
@@ -110,9 +117,9 @@ _irq:
   lw x30, 30*4(x1)
   lw x31, 31*4(x1)
 
-  /* restore x1 - x2 from q registers */
-  picorv32_getq_insn(x1, q1)
-  picorv32_getq_insn(x2, q2)
+  /* restore x2 - x3 from q registers */
+  picorv32_getq_insn(x1, q2)
+  picorv32_getq_insn(x2, q3)
   ret
 
 /*
