@@ -23,7 +23,7 @@
 #define RT_THREAD_PRIORITY_MAX  8
 // <o>OS tick per second
 //  <i>Default: 1000   (1ms)
-#define RT_TICK_PER_SECOND  1000
+#define RT_TICK_PER_SECOND  100
 // <o>Alignment size for CPU architecture data access
 //  <i>Default: 4
 #define RT_ALIGN_SIZE   4
@@ -70,7 +70,7 @@
 #define IDLE_THREAD_STACK_SIZE 128*4
 // <e>Software timers Configuration
 // <i> Enables user timers
-#define RT_USING_TIMER_SOFT         1
+#define RT_USING_TIMER_SOFT         0
 #if RT_USING_TIMER_SOFT == 0
     #undef RT_USING_TIMER_SOFT
 #endif
