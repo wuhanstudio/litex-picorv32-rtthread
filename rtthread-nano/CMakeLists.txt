@@ -5,7 +5,7 @@ set(CMAKE_SYSTEM_NAME Generic)
 set(CMAKE_SYSTEM_PROCESSOR riscv)
 SET(CMAKE_CROSSCOMPILING 1)
 
-set(tools /opt/riscv32i)
+set(tools /opt/riscv32im)
 set(LINKR_FILE ../drivers/linker_scripts/link.lds)
 set(CMAKE_ASM_COMPILER ${tools}/bin/riscv32-unknown-elf-gcc)
 set(CMAKE_C_COMPILER ${tools}/bin/riscv32-unknown-elf-gcc)
