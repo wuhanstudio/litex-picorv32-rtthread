@@ -210,17 +210,13 @@ void rt_application_init(void)
 
 int rtthread_startup(void)
 {
-    rt_kprintf("Starting up\n");
     rt_hw_interrupt_disable();
 
     /* board level initialization
      * NOTE: please initialize heap inside board initialization.
      */
-    rt_kprintf("Board init\n");
     rt_hw_board_init();
-    rt_kprintf("Board init done\n");
 
-    rt_kprintf("Versioin\n");
     /* show RT-Thread version */
     rt_show_version();
 

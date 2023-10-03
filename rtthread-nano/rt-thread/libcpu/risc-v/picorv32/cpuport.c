@@ -13,13 +13,12 @@
 #include <rthw.h>
 #include <rtthread.h>
 
-#include "cpuport.h"
 #include <irq.h>
+#include "cpuport.h"
 
 volatile rt_ubase_t  rt_interrupt_from_thread = 0;
 volatile rt_ubase_t  rt_interrupt_to_thread   = 0;
 volatile rt_uint32_t rt_thread_switch_interrupt_flag = 0;
-volatile rt_uint32_t rt_hw_context_switch_flag = 0;
 
 struct rt_hw_stack_frame
 {
@@ -124,40 +123,21 @@ void rt_hw_context_switch(rt_ubase_t from, rt_ubase_t to)
 
     rt_thread_switch_interrupt_flag = 1;
 
-    rt_hw_context_switch_flag = 1 ;
-
     return ;
 }
 
 rt_base_t rt_hw_interrupt_disable(void)
 {
-    // rt_kprintf("Interrupt Disabled \n");
+    rt_base_t mask = irq_getmask();
     _irq_disable();
 
-    return _irq_enabled == 0;
+    return mask;
 }
 
 void rt_hw_interrupt_enable(rt_base_t level)
 {
-    // rt_kprintf("Interrupt Enabled 0x%08x\n", level);
-
-    irq_setmask(0);
-	irq_setie(1);
-
-    if(rt_hw_context_switch_flag)
-    {
-        rt_hw_context_switch_flag = 0;
-        if((level & 0x0002) == 0)
-        {
-            /* trigger system interrupt or not */
-           if(rt_thread_switch_interrupt_flag)   
-           {
-                rt_kprintf("Call Interrupt...\n");
-                __asm("call _irq");
-                // __asm("ecall");
-           }
-        }
-    }
+    _irq_enable();
+    irq_setmask(level);
 
     return;
 }
