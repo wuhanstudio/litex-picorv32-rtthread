@@ -24,6 +24,7 @@ extern unsigned int _irq_pending;
 extern unsigned int _irq_mask;
 // Read only.
 extern unsigned int _irq_enabled;
+
 extern void _irq_enable(void);
 extern void _irq_disable(void);
 extern void _irq_setmask(unsigned int);

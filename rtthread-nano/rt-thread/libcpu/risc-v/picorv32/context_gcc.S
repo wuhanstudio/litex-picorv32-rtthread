@@ -21,6 +21,7 @@
 .globl rt_hw_context_switch_to
 rt_hw_context_switch_to:
     lw sp, (a0)
+
     /* resw ra to mepc */
     lw tp,   0 * 4(sp)                /* Add PC to thread poiner */
     lw x1,   1 * REGBYTES(sp)         /* x1 - ra - return address for jumps */

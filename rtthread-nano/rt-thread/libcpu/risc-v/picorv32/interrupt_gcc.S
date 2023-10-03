@@ -1,136 +1,139 @@
 #include "custom_ops.S"
 
+#define REGBYTES 4
+
 /*
  * IRQ handler, branched to from the vector.
  */
  .global _irq
 
 _irq:
-  /* save x1/x2 to q1/q2 */
-  picorv32_setq_insn(q2, x1)
-  picorv32_setq_insn(q3, x2)
+    /* save registers */
+    addi sp, sp, -32 * REGBYTES
+    
+    picorv32_setq_insn(q2, x1)
 
-  /* use x1 to index into irq_regs */
-  lui x1, %hi(irq_regs)
-  addi x1, x1, %lo(irq_regs)
+    picorv32_getq_insn(x1, q0)
+    
+    sw x1,   0*REGBYTES(sp)             /* save epc pointer */
+    
+    picorv32_getq_insn(x1, q2)          /* save return address */ 
+    sw x1,   1 * REGBYTES(sp)
+    
+    sw x5,   5 * REGBYTES(sp)
+    sw x6,   6 * REGBYTES(sp)
+    sw x7,   7 * REGBYTES(sp)
+    sw x8,   8 * REGBYTES(sp)
+    sw x9,   9 * REGBYTES(sp)
+    sw x10, 10 * REGBYTES(sp)
+    sw x11, 11 * REGBYTES(sp)
+    sw x12, 12 * REGBYTES(sp)
+    sw x13, 13 * REGBYTES(sp)
+    sw x14, 14 * REGBYTES(sp)
+    sw x15, 15 * REGBYTES(sp)
+    sw x16, 16 * REGBYTES(sp)
+    sw x17, 17 * REGBYTES(sp)
+    sw x18, 18 * REGBYTES(sp)
+    sw x19, 19 * REGBYTES(sp)
+    sw x20, 20 * REGBYTES(sp)
+    sw x21, 21 * REGBYTES(sp)
+    sw x22, 22 * REGBYTES(sp)
+    sw x23, 23 * REGBYTES(sp)
+    sw x24, 24 * REGBYTES(sp)
+    sw x25, 25 * REGBYTES(sp)
+    sw x26, 26 * REGBYTES(sp)
+    sw x27, 27 * REGBYTES(sp)
+    sw x28, 28 * REGBYTES(sp)
+    sw x29, 29 * REGBYTES(sp)
+    sw x30, 30 * REGBYTES(sp)
+    sw x31, 31 * REGBYTES(sp)
 
-  /* use x2 as scratch space for saving registers */
+    picorv32_setq_insn(q3, x2)          /* save sp to q3 register */
+    
+    /* switch to interrupt stack */
+    la sp , _irq_stack                   /* load irq stack */
 
-  /* q0 (== x1), q2(== x2), q3 */
-  picorv32_getq_insn(x2, q0)
-  sw x2,   0*4(x1)
-  picorv32_getq_insn(x2, q2)
-  sw x2,   1*4(x1)
-  picorv32_getq_insn(x2, q3)
-  sw x2,   2*4(x1)
+    /* interrupt handle */
+    call  rt_interrupt_enter
+  
+  	// arg0 = address of regs
+  	lui a0, %hi(irq_regs)
+	  addi a0, a0, %lo(irq_regs)
 
-  /* save x3 - x31 */
-  sw x3,   3*4(x1)
-  sw x4,   4*4(x1)
-  sw x5,   5*4(x1)
-  sw x6,   6*4(x1)
-  sw x7,   7*4(x1)
-  sw x8,   8*4(x1)
-  sw x9,   9*4(x1)
-  sw x10, 10*4(x1)
-  sw x11, 11*4(x1)
-  sw x12, 12*4(x1)
-  sw x13, 13*4(x1)
-  sw x14, 14*4(x1)
-  sw x15, 15*4(x1)
-  sw x16, 16*4(x1)
-  sw x17, 17*4(x1)
-  sw x18, 18*4(x1)
-  sw x19, 19*4(x1)
-  sw x20, 20*4(x1)
-  sw x21, 21*4(x1)
-  sw x22, 22*4(x1)
-  sw x23, 23*4(x1)
-  sw x24, 24*4(x1)
-  sw x25, 25*4(x1)
-  sw x26, 26*4(x1)
-  sw x27, 27*4(x1)
-  sw x28, 28*4(x1)
-  sw x29, 29*4(x1)
-  sw x30, 30*4(x1)
-  sw x31, 31*4(x1)
+	  // arg1 = interrupt type
+	  picorv32_getq_insn(a1, q1)
 
-  /* update _irq_pending to the currently pending interrupts */
-  picorv32_getq_insn(t0, q1)
-  la t1, (_irq_pending)
-  sw t0, 0(t1)
+    /* call to C function */
+    jal ra, irq
 
-  /* prepare C handler stack */
-  lui sp, %hi(_irq_stack)
-  addi sp, sp, %lo(_irq_stack)
+    // new irq_regs address returned from C code in a0
+	  addi x1, a0, 0  /* use x1 to index into irq_regs */
 
-  call rt_interrupt_enter
+    call  rt_interrupt_leave
 
-  /* call C handler */
-  jal ra, irq
+    /* switch to from thread stack */
+    picorv32_getq_insn(sp, q3)
+  
+    /* need to switch new thread */
+    la    s0, rt_thread_switch_interrupt_flag
+    lw    s2, 0(s0)
+    beqz  s2, rt_hw_context_switch_interrupt_exit
+  
+    /* clear switch interrupt flag */
+    sw    zero, 0(s0)
 
-  call rt_interrupt_leave
+    la    s0, rt_interrupt_from_thread
+    lw  s1, 0(s0)
+    sw sp, 0(s1)
 
-  /* use x1 to index into irq_regs */
-  lui x1, %hi(irq_regs)
-  addi x1, x1, %lo(irq_regs)
+    la    s0, rt_interrupt_to_thread
+    lw  s1, 0(s0)
+    lw  sp, 0(s1)
 
-  la s0, rt_thread_switch_interrupt_flag
-  lw s2, 0(s0)
-  beqz s2, rt_hw_context_switch_interrupt_exit
+    lw  a0,  0 * REGBYTES(sp)
+    picorv32_setq_insn(q0, a0)
 
-  sw zero, 0(s0)
+    /* restore registers */
+    rt_hw_context_switch_interrupt_exit:
 
-  la s0, rt_interrupt_from_thread
-  lw s1, 0(s0)
-  lw sp, 0(s1)
+    lw x1,   0 * REGBYTES(sp)
+    picorv32_setq_insn(q0, x1)
 
-  lw a0, 0*4(sp)
-  picorv32_setq_insn(q0, a0)
+    lw x1,   1 * REGBYTES(sp)
+    picorv32_setq_insn(q2, x1)
 
-rt_hw_context_switch_interrupt_exit:
-  /* restore q0 - q2 */
-  lw x2,   0*4(x1)
-  picorv32_setq_insn(q0, x2)
-  lw x2,   1*4(x1)
-  picorv32_setq_insn(q1, x2)
-  lw x2,   2*4(x1)
-  picorv32_setq_insn(q2, x2)
+    lw x5,   5 * REGBYTES(sp)
+    lw x6,   6 * REGBYTES(sp)
+    lw x7,   7 * REGBYTES(sp)
+    lw x8,   8 * REGBYTES(sp)
+    lw x9,   9 * REGBYTES(sp)
+    lw x10, 10 * REGBYTES(sp)
+    lw x11, 11 * REGBYTES(sp)
+    lw x12, 12 * REGBYTES(sp)
+    lw x13, 13 * REGBYTES(sp)
+    lw x14, 14 * REGBYTES(sp)
+    lw x15, 15 * REGBYTES(sp)
+    lw x16, 16 * REGBYTES(sp)
+    lw x17, 17 * REGBYTES(sp)
+    lw x18, 18 * REGBYTES(sp)
+    lw x19, 19 * REGBYTES(sp)
+    lw x20, 20 * REGBYTES(sp)
+    lw x21, 21 * REGBYTES(sp)
+    lw x22, 22 * REGBYTES(sp)
+    lw x23, 23 * REGBYTES(sp)
+    lw x24, 24 * REGBYTES(sp)
+    lw x25, 25 * REGBYTES(sp)
+    lw x26, 26 * REGBYTES(sp)
+    lw x27, 27 * REGBYTES(sp)
+    lw x28, 28 * REGBYTES(sp)
+    lw x29, 29 * REGBYTES(sp)
+    lw x30, 30 * REGBYTES(sp)
+    lw x31, 31 * REGBYTES(sp)
+    
+    picorv32_getq_insn(x1, q2)
 
-  /* restore x3 - x31 */
-  lw x3,   3*4(x1)
-  lw x4,   4*4(x1)
-  lw x5,   5*4(x1)
-  lw x6,   6*4(x1)
-  lw x7,   7*4(x1)
-  lw x8,   8*4(x1)
-  lw x9,   9*4(x1)
-  lw x10, 10*4(x1)
-  lw x11, 11*4(x1)
-  lw x12, 12*4(x1)
-  lw x13, 13*4(x1)
-  lw x14, 14*4(x1)
-  lw x15, 15*4(x1)
-  lw x16, 16*4(x1)
-  lw x17, 17*4(x1)
-  lw x18, 18*4(x1)
-  lw x19, 19*4(x1)
-  lw x20, 20*4(x1)
-  lw x21, 21*4(x1)
-  lw x22, 22*4(x1)
-  lw x23, 23*4(x1)
-  lw x24, 24*4(x1)
-  lw x25, 25*4(x1)
-  lw x26, 26*4(x1)
-  lw x27, 27*4(x1)
-  lw x28, 28*4(x1)
-  lw x29, 29*4(x1)
-  lw x30, 30*4(x1)
-  lw x31, 31*4(x1)
+    addi  sp, sp, 32 * REGBYTES
 
-  /* restore x1 - x2 from q registers */
-  picorv32_getq_insn(x1, q1)
-  picorv32_getq_insn(x2, q2)
   ret
 
 /*
@@ -186,31 +189,31 @@ _irq_setmask:
 .section .bss
 irq_regs:
   /* saved interrupt registers, x0 - x31 */
-  .fill 32,4
+  .fill 32, 4
 
   /* interrupt stack */
-  .fill 256,4
+  .fill 256, 4
+
 _irq_stack:
+  /*
+  * Bitfield of pending interrupts, updated on ISR entry.
+  */
+  .global _irq_pending
+  _irq_pending:
+    .word 0
 
-/*
- * Bitfield of pending interrupts, updated on ISR entry.
- */
-.global _irq_pending
-_irq_pending:
-  .word 0
+  /*
+  * Software copy of enabled interrupts. Do not write directly, use
+  * _irq_set_mask instead.
+  */
+  .global _irq_mask
+  _irq_mask:
+    .word 0
 
-/*
- * Software copy of enabled interrupts. Do not write directly, use
- * _irq_set_mask instead.
- */
-.global _irq_mask
-_irq_mask:
-  .word 0
-
-/*
- * Software state of global interrupts being enabled or disabled. Do not write
- * directly, use _irq_disable / _irq_enable instead.
- */
-.global _irq_enabled
-_irq_enabled:
-  .word 0
+  /*
+  * Software state of global interrupts being enabled or disabled. Do not write
+  * directly, use _irq_disable / _irq_enable instead.
+  */
+  .global _irq_enabled
+  _irq_enabled:
+    .word 0

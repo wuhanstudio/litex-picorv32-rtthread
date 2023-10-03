@@ -15,6 +15,7 @@ SECTIONS
 		*start*(.text)
 		KEEP(*start*(.text))
 		KEEP(*(.text.irq))
+		KEEP(*(.text._irq))
 
 		*(.text .stub .text.* .gnu.linkonce.t.*)
 		_etext = .;

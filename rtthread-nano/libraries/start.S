@@ -26,6 +26,7 @@ _irq_vector:
   addi sp, sp, -16
   sw t0, 4(sp)
   sw ra, 8(sp)
+
   /* By convention, q2 holds true IRQ vector, but remains caller-save.
   We rely on the assumption that compiler-generated code will never touch
   the QREGs. q3 is truly scratch/caller-save. */
