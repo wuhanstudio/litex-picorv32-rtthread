@@ -74,7 +74,7 @@ $ sudo make install
 ## LiteX SoC
 
 ```
-$ cd litex-soc-icesugar-rust
+$ cd litex-picorv32-rtthread
 
 # This command uses our custom config
 $ python3 -m soc.targets.muselab_icesugar --build --doc
@@ -89,10 +89,7 @@ $ python3 -m soc.targets.muselab_icesugar --flash
 
 ```
 # This command creates the folder demo that includes the source code
-# litex_bare_metal_demo --build-path=./build/muselab_icesugar/
-
-$ cd demo
-$ make
+$ litex_bare_metal_demo --build-path=./build/muselab_icesugar/
 $ icesprog -w demo.bin -o 0x40000
 ```
 
