@@ -4,6 +4,12 @@
 
 ## Prerequisites
 
+Install `uv` (python virtual environment):
+
+```
+$ curl -LsSf https://astral.sh/uv/install.sh | sh
+```
+
 0. Clone the repo:
 
 ```
@@ -11,6 +17,8 @@ $ git clone https://github.com/wuhanstudio/litex-picorv32-rtthread
 $ cd litex-picorv32-rtthread
 $ git submodule init
 $ git submodule update
+$ uv sync
+$ . .venv/bin/activate
 ```
 
 1. Install LiteX:
@@ -20,7 +28,6 @@ $ mkdir python-litex && cd python-litex
 $ wget https://raw.githubusercontent.com/enjoy-digital/litex/master/litex_setup.py
 $ chmod +x litex_setup.py
 $ ./litex_setup.py --init --install --user `whoami` --config=full
-$ pip3 install meson sphinx sphinxcontrib-wavedrom
 ```
 
 For C development:
