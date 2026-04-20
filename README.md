@@ -18,7 +18,7 @@ $ cd litex-picorv32-rtthread
 $ git submodule init
 $ git submodule update
 $ uv sync
-$ . .venv/bin/activate
+$ source .venv/bin/activate
 ```
 
 1. Install LiteX:
@@ -63,7 +63,6 @@ $ sudo make install
 $ sudo apt-get install gawk git make python3 lld bison clang flex \
 	libffi-dev libfl-dev libreadline-dev pkg-config tcl-dev zlib1g-dev \
 	graphviz xdot
-$ curl -LsSf https://astral.sh/uv/install.sh | sh
 $ git clone --recursive https://github.com/YosysHQ/yosys.git
 $ cd yosys
 $ make config-gcc
@@ -87,6 +86,7 @@ $ sudo make install
 
 ```
 $ cd litex-picorv32-rtthread
+$ source .venv/bin/activate
 
 # This command uses our custom config
 $ python3 -m soc.targets.muselab_icesugar --build --doc
