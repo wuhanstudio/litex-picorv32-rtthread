@@ -18,7 +18,7 @@ $ cd litex-picorv32-rtthread
 $ git submodule init
 $ git submodule update
 $ uv sync
-$ . .venv/bin/activate
+$ source .venv/bin/activate
 ```
 
 1. Install LiteX:
@@ -27,7 +27,7 @@ $ . .venv/bin/activate
 $ mkdir python-litex && cd python-litex
 $ wget https://raw.githubusercontent.com/enjoy-digital/litex/master/litex_setup.py
 $ chmod +x litex_setup.py
-$ ./litex_setup.py --init --install --user `whoami` --config=full
+$ ./litex_setup.py --init --install --config=full
 ```
 
 For C development:
@@ -51,8 +51,8 @@ $ git clone https://github.com/YosysHQ/icestorm.git
 $ cd icestorm
 $ sudo apt-get install build-essential clang bison flex libreadline-dev \
                      gawk tcl-dev libffi-dev git mercurial graphviz   \
-                     xdot pkg-config python python3 libftdi-dev \
-                     qt5-default python3-dev libboost-all-dev cmake libeigen3-dev
+                     xdot pkg-config python3 libftdi-dev \
+                     python3-dev libboost-all-dev cmake libeigen3-dev
 $ make -j$(nproc)
 $ sudo make install
 ```
@@ -63,7 +63,6 @@ $ sudo make install
 $ sudo apt-get install gawk git make python3 lld bison clang flex \
 	libffi-dev libfl-dev libreadline-dev pkg-config tcl-dev zlib1g-dev \
 	graphviz xdot
-$ curl -LsSf https://astral.sh/uv/install.sh | sh
 $ git clone --recursive https://github.com/YosysHQ/yosys.git
 $ cd yosys
 $ make config-gcc
@@ -87,6 +86,7 @@ $ sudo make install
 
 ```
 $ cd litex-picorv32-rtthread
+$ source .venv/bin/activate
 
 # This command uses our custom config
 $ python3 -m soc.targets.muselab_icesugar --build --doc
